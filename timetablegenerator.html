@@ -1,0 +1,90 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Table Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Time Table Generator</h1>
+  <form id="timetableForm">
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" required>
+    <label for="day">Day:</label>
+    <select id="day">
+      <option>Monday</option>
+      <option>Tuesday</option>
+      <option>Wednesday</option>
+      <option>Thursday</option>
+      <option>Friday</option>
+    </select>
+    <label for="period">Period (1-6):</label>
+    <input type="number" id="period" min="1" max="6" required>
+    <button type="submit">Add</button>
+    <button type="button" onclick="exportToJSON()">Export</button>
+    <button type="button" onclick="importFromJSON()">Import</button>
+  </form>
+
+  <input type="file" id="fileInput" style="display:none">
+
+  <table id="timetable">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Period 1</th>
+        <th>Period 2</th>
+        <th>Period 3</th>
+        <th>Period 4</th>
+        <th>Period 5</th>
+        <th>Period 6</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    const table = {};
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const tableBody = document.getElementById("tableBody");
+
+    days.forEach(day => table[day] = ["", "", "", "", "", ""]);
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+      for (let day of days) {
+        const row = document.createElement("tr");
+        const dayCell = document.createElement("td");
+        dayCell.textContent = day;
+        row.appendChild(dayCell);
+        table[day].forEach(period => {
+          const cell = document.createElement("td");
+          cell.textContent = period;
+          row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+      }
+    }
+
+    document.getElementById("timetableForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const subject = document.getElementById("subject").value;
+      const day = document.getElementById("day").value;
+      const period = parseInt(document.getElementById("period").value);
+      table[day][period - 1] = subject;
+      renderTable();
+      this.reset();
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
