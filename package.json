@@ -1,0 +1,25 @@
+const path=require('path')
+console.log(path.dirname(__filename))
+console.log(path.basename(__filename))
+console.log(path.delimiter)
+console.log(path.extname(__filename))
+
+{
+    "dependencies": {
+        "nodemon": "^3.1.9",
+        "packages": "^0.0.8",
+        "upper-case": "^3.0.0",
+        "uppercase": "^2.0.0-beta.23"
+    },
+    "name": "crt-429",
+    "version": "1.0.0",
+    "main": "express.js",
+    "scripts": {
+        "start": "node server.js",
+        "server": "nodemon server.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "description": ""
+}
