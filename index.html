@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Book</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    input, button { margin: 0.5rem; padding: 0.5rem; }
+    .contact-item { margin: 0.5rem 0; }
+    .edit-btn { margin-left: 1rem; color: green; cursor: pointer; }
+    .delete-btn { margin-left: 1rem; color: red; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Contact Book</h1>
+  <input id="name" placeholder="Name">
+  <input id="phone" placeholder="Phone">
+  <input id="email" placeholder="Email">
+  <button onclick="addContact()">Add Contact</button>
+  <br><br>
+  <input id="search" placeholder="Search by name" oninput="searchContact()">
+  <ul id="contacts"></ul>
+
+  <script>
+    const API = '/api/contacts';
+    let editingId = null;
+
+    async function addContact() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+
+      if (!name || !phone || !email) return alert('All fields required');
+
+      const contact = { name, phone, email };
+
+      if (editingId) {
+        await fetch(`${API}/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(contact)
+        });
+        editingId = null;
+      } else {
+        await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(contact)
+        });
+      }
+
+      document.getElementById('name').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('email').value = '';
+
+      loadContacts();
+    }
+
+    async function loadContacts() {
+      const res = await fetch(API);
+      const data = await res.json();
+      renderContacts(data);
+    }
+
+    async function deleteContact(id) {
+      await fetch(`${API}/${id}`, { method: 'DELETE' });
+      loadContacts();
+    }
+
+    async function editContact(id) {
+      const res = await fetch(`${API}`);
+      const contacts = await res.json();
+      const contact = contacts.find(c => c._id === id);
+
+      document.getElementById('name').value = contact.name;
+      document.getElementById('phone').value = contact.phone;
+      document.getElementById('email').value = contact.email;
+      editingId = contact._id;
+    }
+
+    async function searchContact() {
+      const term = document.getElementById('search').value;
+      const res = await fetch(`${API}/search/${term}`);
+      const data = await res.json();
+      renderContacts(data);
+    }
+
+    function renderContacts(contacts) {
+      const list = document.getElementById('contacts');
+      list.innerHTML = '';
+      contacts.forEach(c => {
+        const li = document.createElement('li');
+        li.className = 'contact-item';
+        li.innerHTML = `${c.name} (${c.phone}, ${c.email})
+          <span class="edit-btn" onclick="editContact('${c._id}')">[Edit]</span>
+          <span class="delete-btn" onclick="deleteContact('${c._id}')">[Delete]</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    loadContacts();
+  </script>
+</body>
+</html>
