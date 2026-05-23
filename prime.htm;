@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+   // Regular function to check if a number is prime
+function isPrimeRegular(num) {
+    if (num <= 1) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+// Arrow function to check if a number is prime
+const isPrimeArrow = (num) => {
+    if (num <= 1) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) return false;
+    }
+    return true;
+};
+
+// Anonymous function passed directly to another function (used for verification)
+const isPrimeAnonymous = function(num) {
+    if (num <= 1) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) return false;
+    }
+    return true;
+};
+let input = prompt("Enter a number: ");
+let number = parseInt(input);
+if (isNaN(number)) {
+    console.log("Please enter a valid number.");
+} else {
+    console.log(`Using regular function: ${number} is ${isPrimeRegular(number) ? "prime" : "not prime"}`);
+    console.log(`Using arrow function: ${number} is ${isPrimeArrow(number) ? "prime" : "not prime"}`);
+    console.log(`Using anonymous function: ${number} is ${isPrimeAnonymous(number) ? "prime" : "not prime"}`);
+}
+ </script>
+</body>
+</html>
